@@ -34,3 +34,23 @@ class TestAdminRequired(unittest.TestCase):
     self.assertItemsEqual(files, expected_files)
     os_mock.path.listdir.assert_called_with('parent_directory')
 
+  def test_has_pipeline_conf(self):
+    self.assertFalse(script.is_pipeline_conf('foo'))
+    self.assertFalse(script.is_pipeline_conf('foo.conf'))
+    self.assertFalse(script.is_pipeline_conf('foo_pipeline'))
+    self.assertTrue(script.is_pipeline_conf('foo_pipeline.conf'))
+    self.assertFalse(script.is_pipeline_conf('foo_pipeline.conf.backup'))
+    self.assertFalse(script.is_pipeline_conf('~/directory/foo.conf'))
+    self.assertFalse(script.is_pipeline_conf('~/directory/foo_pipeline'))
+    self.assertTrue(script.is_pipeline_conf('~/directory/foo_pipeline.conf'))
+    self.assertFalse(script.is_pipeline_conf('~/directory/foo_pipeline.conf.backup'))
+    self.assertFalse(script.is_pipeline_conf('~/directory_pipeline.conf/foo'))
+
+  @mock.patch('pathogenpipelineconfigtools.report_job_needs_admin.get_files_in_directory')
+  def test_find_job_trackers_in_folder(self, script_mock):
+    script_mock.return_value = ['parent_directory/foo', 'parent_directory/foo.conf', 
+                                'parent_directory/foo_pipeline', 'parent_directory/foo_pipeline.conf']
+    trackers = script.find_job_trackers_in_folder('parent_directory')
+    expected_trackers = ['parent_directory/foo_pipeline.conf']
+    self.assertEqual(trackers, expected_trackers)
+
