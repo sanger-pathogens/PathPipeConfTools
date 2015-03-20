@@ -32,9 +32,17 @@ class ConfigDirectory(object):
       return os.path.join(parent, child)
     return map(add_path, dirs)
 
-  def get_all_job_trackers(self, dirname):
+  def get_all_job_tracker_filenames(self, dirname):
     job_trackers = self.find_job_trackers_in_folder(dirname)
     child_directories = self.get_subdirectories(dirname)
     for child_directory in child_directories:
       job_trackers += self.find_job_trackers_in_folder(child_directory)
     return job_trackers
+
+  def get_job_trackers(self, dirname):
+    job_tracker_filenames = self.get_all_job_tracker_filenames(dirname)
+    return [TrackerFile(filename) for filename in job_tracker_filenames]
+
+class TrackerFile(object):
+  def __init__(self, path):
+    self.path = path

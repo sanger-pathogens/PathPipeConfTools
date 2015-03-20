@@ -2,7 +2,7 @@ import unittest
 import mock
 import os
 from mock import MagicMock
-from pathogenpipelineconfigtools.Tools import ConfigDirectory
+from pathogenpipelineconfigtools.Tools import ConfigDirectory, TrackerFile
 
 class TestAdminRequired(unittest.TestCase):
 
@@ -89,14 +89,26 @@ class TestAdminRequired(unittest.TestCase):
       return ['file_another_pipeline.conf', 'file_another_random', 'dir_yet_another']
 
   @mock.patch('pathogenpipelineconfigtools.Tools.os')
-  def test_get_all_job_trackers(self, os_mock):
+  def test_get_all_job_tracker_filenames(self, os_mock):
     config_dir = ConfigDirectory()
     os_mock.path.join = os.path.join
     os_mock.path.isdir.side_effect = self.isdir
     os_mock.path.isfile.side_effect = self.isfile
     os_mock.path.listdir.side_effect = self.nested_directory  
     os_mock.path.sep = '/'
-    pipeline_files = config_dir.get_all_job_trackers('dir_parent')
+    pipeline_files = config_dir.get_all_job_tracker_filenames('dir_parent')
     expected_files = ['dir_parent/file_parent_pipeline.conf', 'dir_parent/dir_child/file_child_pipeline.conf']
     self.assertEqual(pipeline_files, expected_files)
 
+  def test_get_job_trackers(self):
+    config_dir = ConfigDirectory()
+    config_dir.get_all_job_tracker_filenames = MagicMock()
+    pipeline_files =['dir_parent/file_parent_pipeline.conf', 'dir_parent/dir_child/file_child_pipeline.conf'] 
+    config_dir.get_all_job_tracker_filenames.return_value = pipeline_files
+
+    tracker_files = config_dir.get_job_trackers('dir_parent')
+    self.assertEquals(len(tracker_files), 2)
+    self.assertIsInstance(tracker_files[0], TrackerFile)
+    self.assertIsInstance(tracker_files[1], TrackerFile)
+    tracker_filenames = [tracker.path for tracker in tracker_files]
+    self.assertEqual(tracker_filenames, pipeline_files)
