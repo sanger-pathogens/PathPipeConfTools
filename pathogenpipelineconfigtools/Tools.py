@@ -46,3 +46,8 @@ class ConfigDirectory(object):
 class TrackerFile(object):
   def __init__(self, path):
     self.path = path
+
+  def get_lines(self):
+    with open(self.path, 'r') as tracker_file:
+      contents = tracker_file.read().strip('\n')
+    return contents.split('\n')

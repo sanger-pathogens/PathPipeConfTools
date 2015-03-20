@@ -3,6 +3,7 @@ import mock
 import os
 from mock import MagicMock
 from pathogenpipelineconfigtools.Tools import ConfigDirectory, TrackerFile
+from StringIO import StringIO
 
 class TestAdminRequired(unittest.TestCase):
 
@@ -112,3 +113,13 @@ class TestAdminRequired(unittest.TestCase):
     self.assertIsInstance(tracker_files[1], TrackerFile)
     tracker_filenames = [tracker.path for tracker in tracker_files]
     self.assertEqual(tracker_filenames, pipeline_files)
+
+class TestJobTracker(unittest.TestCase):
+
+  @mock.patch('pathogenpipelineconfigtools.Tools.open', create=True)
+  def test_get_lines(self, open_mock):
+    file_like_object = StringIO('line 1\nline 2\n')
+    open_mock.return_value.__enter__.return_value = file_like_object
+
+    tracker = TrackerFile('foo')
+    self.assertEquals(tracker.get_lines(), ['line 1', 'line 2'])
