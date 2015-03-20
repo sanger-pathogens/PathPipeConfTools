@@ -124,6 +124,28 @@ class TestJobTracker(unittest.TestCase):
     tracker = TrackerFile('foo')
     self.assertEquals(tracker.get_lines(), ['line 1', 'line 2'])
 
+  def test_get_jobs(self):
+    tracker = TrackerFile('foo')
+    tracker.get_lines = MagicMock()
+    tracker.get_lines.return_value = [
+      "__VRTrack_JOB_TYPE__ /parent_dir/child_dir/job_1.conf",
+      "#admin_approval_required#__VRTrack_JOB_TYPE__ /parent_dir/child_dir/job_2.conf",
+      "bad config_line"
+    ]
+
+    jobs = tracker.get_jobs()
+    self.assertEqual(jobs[0].job_type, '__VRTrack_JOB_TYPE__')
+    self.assertEqual(jobs[0].config_file, '/parent_dir/child_dir/job_1.conf')
+    self.assertEqual(jobs[0].approval_required, False)
+    self.assertIsInstance(jobs[0], PipelineJob)
+
+    self.assertEqual(jobs[1].job_type, '__VRTrack_JOB_TYPE__')
+    self.assertEqual(jobs[1].config_file, '/parent_dir/child_dir/job_2.conf')
+    self.assertEqual(jobs[1].approval_required, True)
+    self.assertIsInstance(jobs[1], PipelineJob)
+
+    self.assertEqual(len(jobs), 2)
+
 class TestJob(unittest.TestCase):
 
   def test_init(self):

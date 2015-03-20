@@ -52,6 +52,16 @@ class TrackerFile(object):
       contents = tracker_file.read().strip('\n')
     return contents.split('\n')
 
+  def get_jobs(self):
+    jobs = []
+    for line in self.get_lines():
+      try:
+        jobs.append(PipelineJob(line))
+      except ValueError:
+        pass # Could not parse line in file, ignoring
+    return jobs
+
+
 class PipelineJob(object):
   def __init__(self, config_line):
     self.config_line = config_line
