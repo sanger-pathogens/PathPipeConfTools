@@ -71,3 +71,22 @@ class TestAdminRequired(unittest.TestCase):
     subdirs = script.get_subdirectories('parent_directory')
     self.assertEqual(subdirs, ['parent_directory/dir_bar'])
 
+  def nested_directory(self, dirname):
+    if dirname == 'dir_parent':
+      return ['file_parent_pipeline.conf', 'file_parent_random', 'dir_child']
+    elif dirname == 'dir_parent/dir_child':
+      return ['file_child_pipeline.conf', 'file_child_random', 'dir_grandchild']
+    else:
+      return ['file_another_pipeline.conf', 'file_another_random', 'dir_yet_another']
+
+  @mock.patch('pathogenpipelineconfigtools.report_job_needs_admin.os')
+  def test_get_all_job_trackers(self, os_mock):
+    os_mock.path.join = os.path.join
+    os_mock.path.isdir.side_effect = self.isdir
+    os_mock.path.isfile.side_effect = self.isfile
+    os_mock.path.listdir.side_effect = self.nested_directory  
+    os_mock.path.sep = '/'
+    pipeline_files = script.get_all_job_trackers('dir_parent')
+    expected_files = ['dir_parent/file_parent_pipeline.conf', 'dir_parent/dir_child/file_child_pipeline.conf']
+    self.assertEqual(pipeline_files, expected_files)
+

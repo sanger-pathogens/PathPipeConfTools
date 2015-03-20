@@ -30,3 +30,10 @@ def get_subdirectories(parent):
   def add_path(child):
     return os.path.join(parent, child)
   return map(add_path, dirs)
+
+def get_all_job_trackers(dirname):
+  job_trackers = find_job_trackers_in_folder(dirname)
+  child_directories = get_subdirectories(dirname)
+  for child_directory in child_directories:
+    job_trackers += find_job_trackers_in_folder(child_directory)
+  return job_trackers 
