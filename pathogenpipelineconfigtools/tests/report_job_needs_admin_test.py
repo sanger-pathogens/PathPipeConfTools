@@ -54,3 +54,20 @@ class TestAdminRequired(unittest.TestCase):
     expected_trackers = ['parent_directory/foo_pipeline.conf']
     self.assertEqual(trackers, expected_trackers)
 
+  @mock.patch('pathogenpipelineconfigtools.report_job_needs_admin.os')
+  def test_just_dirs(self, os_mock):
+    os_mock.path.isdir.side_effect = self.isdir
+
+    dirs = script.just_dirs(['file_foo', 'dir_bar'])
+    expected_dirs = ['dir_bar']
+    self.assertEqual(dirs, expected_dirs)
+  
+  @mock.patch('pathogenpipelineconfigtools.report_job_needs_admin.os')
+  def test_get_subdirectories(self, os_mock):
+    os_mock.path.join = os.path.join
+    os_mock.path.listdir.return_value = ['file_foo', 'dir_bar', 'link_baz']  
+    os_mock.path.isdir.side_effect = self.isdir
+
+    subdirs = script.get_subdirectories('parent_directory')
+    self.assertEqual(subdirs, ['parent_directory/dir_bar'])
+

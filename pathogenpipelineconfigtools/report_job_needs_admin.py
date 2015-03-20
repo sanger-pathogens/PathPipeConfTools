@@ -20,3 +20,13 @@ def find_job_trackers_in_folder(dirname):
   files = get_files_in_directory(dirname)
   job_trackers = filter(is_pipeline_conf, files)
   return job_trackers
+
+def just_dirs(names):
+  return filter(os.path.isdir, names)
+
+def get_subdirectories(parent):
+  contents = os.path.listdir(parent)
+  dirs = just_dirs(contents)
+  def add_path(child):
+    return os.path.join(parent, child)
+  return map(add_path, dirs)
