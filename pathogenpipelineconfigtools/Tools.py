@@ -51,3 +51,32 @@ class TrackerFile(object):
     with open(self.path, 'r') as tracker_file:
       contents = tracker_file.read().strip('\n')
     return contents.split('\n')
+
+class PipelineJob(object):
+  def __init__(self, config_line):
+    self.config_line = config_line
+    self.approval_required = self.is_approval_required(config_line)
+    self.job_type = self.get_job_type(config_line)
+    self.config_file = self.get_job_config(config_line)
+    if not(self.job_type and self.config_file):
+      raise ValueError("Could not parse job details from '%s'" % config_line)
+
+  def is_approval_required(self, line):
+    pattern = re.compile('^#admin_approval_required#')
+    return pattern.match(line) != None
+
+  def get_job_type(self, line):
+    pattern = re.compile('^(#admin_approval_required#)?\s*(__.*__)\s')
+    matches = pattern.match(line)
+    if matches == None:
+      return None
+    else:
+      return matches.groups()[1]
+
+  def get_job_config(self, line):
+    pattern = re.compile('^(#admin_approval_required#)?\s*(__.*__)\s*([^#\s]+)\s*($|#)')
+    matches = pattern.match(line)
+    if matches == None:
+      return None
+    else:
+      return matches.groups()[2]

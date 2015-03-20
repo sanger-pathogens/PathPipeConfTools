@@ -2,8 +2,8 @@ import unittest
 import mock
 import os
 from mock import MagicMock
-from pathogenpipelineconfigtools.Tools import ConfigDirectory, TrackerFile
 from StringIO import StringIO
+from pathogenpipelineconfigtools.Tools import ConfigDirectory, TrackerFile, PipelineJob
 
 class TestAdminRequired(unittest.TestCase):
 
@@ -123,3 +123,92 @@ class TestJobTracker(unittest.TestCase):
 
     tracker = TrackerFile('foo')
     self.assertEquals(tracker.get_lines(), ['line 1', 'line 2'])
+
+class TestJob(unittest.TestCase):
+
+  def test_init(self):
+    job = PipelineJob('__VRTrack_JOB_TYPE__ /parent_dir/child_dir/job_1.conf')
+    self.assertEqual(job.job_type, '__VRTrack_JOB_TYPE__')
+    self.assertEqual(job.config_file, '/parent_dir/child_dir/job_1.conf')
+    self.assertEqual(job.approval_required, False)
+    
+    job = PipelineJob('#admin_approval_required#__VRTrack_JOB_TYPE__ /parent_dir/child_dir/job_2.conf')
+    self.assertEqual(job.job_type, '__VRTrack_JOB_TYPE__')
+    self.assertEqual(job.config_file, '/parent_dir/child_dir/job_2.conf')
+    self.assertEqual(job.approval_required, True)
+
+    self.assertRaises(ValueError, PipelineJob, 'something else')
+    self.assertRaises(ValueError, PipelineJob, 'other')
+    self.assertRaises(ValueError, PipelineJob, '#other#__FOO__ /thing.conf') 
+    self.assertRaises(ValueError, PipelineJob, '#other# /thing.conf') 
+
+  def test_is_approval_required(self):
+    job = PipelineJob('__FOO__ /thing.conf')
+    self.assertTrue(job.is_approval_required('#admin_approval_required#__FOO__ /thing.conf'))
+    self.assertTrue(job.is_approval_required('#admin_approval_required# __FOO__ /thing.conf'))
+    self.assertFalse(job.is_approval_required('admin_approval_required#__FOO__ /thing.conf'))
+    self.assertFalse(job.is_approval_required('__FOO__ /thing.conf'))
+    self.assertFalse(job.is_approval_required('__FOO__ /thing.conf#admin_approval_required#'))
+
+  def test_get_job_type(self):
+    job = PipelineJob('__FOO__ /thing.conf')
+
+    job_type = job.get_job_type('#admin_approval_required#__FOO__ /thing.conf')
+    self.assertEqual(job_type, '__FOO__')
+
+    job_type = job.get_job_type('#admin_approval_required# __FOO__ /thing.conf')
+    self.assertEqual(job_type, '__FOO__')
+
+    job_type = job.get_job_type('admin_approval_required#__FOO__ /thing.conf')
+    self.assertEqual(job_type, None)
+
+    job_type = job.get_job_type('__FOO__ /thing.conf')
+    self.assertEqual(job_type, '__FOO__')
+
+    job_type = job.get_job_type('__FOO__ /thing.conf#admin_approval_required#')
+    self.assertEqual(job_type, '__FOO__')
+
+    job_type = job.get_job_type('__FOO__ /thing.conf #admin_approval_required#')
+    self.assertEqual(job_type, '__FOO__')
+
+    job_type = job.get_job_type('__FOO__ /thing.conf #another comment')
+    self.assertEqual(job_type, '__FOO__')
+
+    job_type = job.get_job_type('something else')
+    self.assertEqual(job_type, None) 
+
+    job_type = job.get_job_type('other')
+    self.assertEqual(job_type, None) 
+
+  def test_get_job_config(self):
+    job = PipelineJob('__FOO__ /thing.conf')
+
+    job_config = job.get_job_config('#admin_approval_required#__FOO__ /thing.conf')
+    self.assertEqual(job_config, '/thing.conf')
+
+    job_config = job.get_job_config('#admin_approval_required# __FOO__ /thing.conf')
+    self.assertEqual(job_config, '/thing.conf')
+
+    job_config = job.get_job_config('admin_approval_required#__FOO__ /thing.conf')
+    self.assertEqual(job_config, None)
+
+    job_config = job.get_job_config('__FOO__ /thing.conf')
+    self.assertEqual(job_config, '/thing.conf')
+
+    job_config = job.get_job_config('__FOO__ /thing.conf ')
+    self.assertEqual(job_config, '/thing.conf')
+
+    job_config = job.get_job_config('__FOO__ /thing.conf#admin_approval_required#')
+    self.assertEqual(job_config, '/thing.conf')
+
+    job_config = job.get_job_config('__FOO__ /thing.conf #admin_approval_required#')
+    self.assertEqual(job_config, '/thing.conf')
+
+    job_config = job.get_job_config('__FOO__ /thing.conf #another comment')
+    self.assertEqual(job_config, '/thing.conf')
+
+    job_type = job.get_job_type('something else')
+    self.assertEqual(job_type, None) 
+
+    job_type = job.get_job_type('other')
+    self.assertEqual(job_type, None) 
