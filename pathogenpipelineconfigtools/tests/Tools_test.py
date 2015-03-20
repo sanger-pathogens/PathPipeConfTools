@@ -24,12 +24,12 @@ class TestAdminRequired(unittest.TestCase):
     files = config_dir.just_files(['file_foo', 'dir_bar'])
     expected_files = ['file_foo']
     self.assertEqual(files, expected_files)
-  
+
   @mock.patch('pathogenpipelineconfigtools.Tools.os')
   def test_get_files_in_directory(self, os_mock):
     config_dir = ConfigDirectory()
     os_mock.path.join = os.path.join
-    os_mock.path.listdir.return_value = ['file_foo', 'dir_bar', 'link_baz']  
+    os_mock.path.listdir.return_value = ['file_foo', 'dir_bar', 'link_baz']
     os_mock.path.isfile.side_effect = self.isfile
 
     files = config_dir.get_files_in_directory('parent_directory')
@@ -54,7 +54,7 @@ class TestAdminRequired(unittest.TestCase):
   def test_find_job_trackers_in_folder(self):
     config_dir = ConfigDirectory()
     script_mock = MagicMock()
-    script_mock.return_value = ['parent_directory/foo', 'parent_directory/foo.conf', 
+    script_mock.return_value = ['parent_directory/foo', 'parent_directory/foo.conf',
                                 'parent_directory/foo_pipeline', 'parent_directory/foo_pipeline.conf']
     config_dir.get_files_in_directory = script_mock
     trackers = config_dir.find_job_trackers_in_folder('parent_directory')
@@ -69,12 +69,12 @@ class TestAdminRequired(unittest.TestCase):
     dirs = config_dir.just_dirs(['file_foo', 'dir_bar'])
     expected_dirs = ['dir_bar']
     self.assertEqual(dirs, expected_dirs)
-  
+
   @mock.patch('pathogenpipelineconfigtools.Tools.os')
   def test_get_subdirectories(self, os_mock):
     config_dir = ConfigDirectory()
     os_mock.path.join = os.path.join
-    os_mock.path.listdir.return_value = ['file_foo', 'dir_bar', 'link_baz']  
+    os_mock.path.listdir.return_value = ['file_foo', 'dir_bar', 'link_baz']
     os_mock.path.isdir.side_effect = self.isdir
 
     subdirs = config_dir.get_subdirectories('parent_directory')
@@ -95,7 +95,7 @@ class TestAdminRequired(unittest.TestCase):
     os_mock.path.join = os.path.join
     os_mock.path.isdir.side_effect = self.isdir
     os_mock.path.isfile.side_effect = self.isfile
-    os_mock.path.listdir.side_effect = self.nested_directory  
+    os_mock.path.listdir.side_effect = self.nested_directory
     os_mock.path.sep = '/'
     pipeline_files = config_dir.get_all_job_tracker_filenames('dir_parent')
     expected_files = ['dir_parent/file_parent_pipeline.conf', 'dir_parent/dir_child/file_child_pipeline.conf']
@@ -104,7 +104,7 @@ class TestAdminRequired(unittest.TestCase):
   def test_get_job_trackers(self):
     config_dir = ConfigDirectory()
     config_dir.get_all_job_tracker_filenames = MagicMock()
-    pipeline_files =['dir_parent/file_parent_pipeline.conf', 'dir_parent/dir_child/file_child_pipeline.conf'] 
+    pipeline_files =['dir_parent/file_parent_pipeline.conf', 'dir_parent/dir_child/file_child_pipeline.conf']
     config_dir.get_all_job_tracker_filenames.return_value = pipeline_files
 
     tracker_files = config_dir.get_job_trackers('dir_parent')
@@ -153,7 +153,7 @@ class TestJob(unittest.TestCase):
     self.assertEqual(job.job_type, '__VRTrack_JOB_TYPE__')
     self.assertEqual(job.config_file, '/parent_dir/child_dir/job_1.conf')
     self.assertEqual(job.approval_required, False)
-    
+
     job = PipelineJob('#admin_approval_required#__VRTrack_JOB_TYPE__ /parent_dir/child_dir/job_2.conf')
     self.assertEqual(job.job_type, '__VRTrack_JOB_TYPE__')
     self.assertEqual(job.config_file, '/parent_dir/child_dir/job_2.conf')
@@ -161,8 +161,8 @@ class TestJob(unittest.TestCase):
 
     self.assertRaises(ValueError, PipelineJob, 'something else')
     self.assertRaises(ValueError, PipelineJob, 'other')
-    self.assertRaises(ValueError, PipelineJob, '#other#__FOO__ /thing.conf') 
-    self.assertRaises(ValueError, PipelineJob, '#other# /thing.conf') 
+    self.assertRaises(ValueError, PipelineJob, '#other#__FOO__ /thing.conf')
+    self.assertRaises(ValueError, PipelineJob, '#other# /thing.conf')
 
   def test_is_approval_required(self):
     job = PipelineJob('__FOO__ /thing.conf')
@@ -197,10 +197,10 @@ class TestJob(unittest.TestCase):
     self.assertEqual(job_type, '__FOO__')
 
     job_type = job.get_job_type('something else')
-    self.assertEqual(job_type, None) 
+    self.assertEqual(job_type, None)
 
     job_type = job.get_job_type('other')
-    self.assertEqual(job_type, None) 
+    self.assertEqual(job_type, None)
 
   def test_get_job_config(self):
     job = PipelineJob('__FOO__ /thing.conf')
@@ -230,7 +230,7 @@ class TestJob(unittest.TestCase):
     self.assertEqual(job_config, '/thing.conf')
 
     job_type = job.get_job_type('something else')
-    self.assertEqual(job_type, None) 
+    self.assertEqual(job_type, None)
 
     job_type = job.get_job_type('other')
-    self.assertEqual(job_type, None) 
+    self.assertEqual(job_type, None)
