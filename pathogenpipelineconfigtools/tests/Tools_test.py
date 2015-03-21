@@ -114,6 +114,55 @@ class TestAdminRequired(unittest.TestCase):
     tracker_filenames = [tracker.path for tracker in tracker_files]
     self.assertEqual(tracker_filenames, pipeline_files)
 
+  @mock.patch('pathogenpipelineconfigtools.Tools.datetime')
+  def test_to_dict(self, datetime_mock):
+    datetime_mock.datetime.now.return_value.isoformat.return_value = '1900-01-01T00:00:00.000000'
+    def new_job(approval_required, job_type, config_file):
+      job = MagicMock()
+      job.approval_required = approval_required
+      job.job_type = job_type
+      job.config_file = config_file
+      return job
+
+    config_dir = ConfigDirectory()
+    config_dir.get_job_trackers = MagicMock()
+
+    job_tracker = MagicMock()
+    job_tracker.path = 'parent_dir/foo_pipeline.conf'
+    job_tracker.get_jobs.return_value = [
+      new_job(True, '__FOO__', 'parent_dir/child_dir/job_1.conf'),
+      new_job(True, '__BAR__', 'parent_dir/child_dir/job_2.conf'),
+      new_job(False, '__BAZ__', 'parent_dir/child_dir/job_3.conf')
+    ]
+
+    config_dir.get_job_trackers.return_value = [job_tracker]
+
+    actual_dict = config_dir.to_dict('parent_dir')
+    expected_dict = {
+                      'jobs': [
+                        { 'approval_need': True,
+                          'job_type': '__FOO__',
+                          'config_file': 'parent_dir/child_dir/job_1.conf',
+                          'pipeline_tracker': 'parent_dir/foo_pipeline.conf'
+                        },
+                        { 'approval_need': True,
+                          'job_type': '__BAR__',
+                          'config_file': 'parent_dir/child_dir/job_2.conf',
+                          'pipeline_tracker': 'parent_dir/foo_pipeline.conf'
+                        },
+                        { 'approval_need': False,
+                          'job_type': '__BAZ__',
+                          'config_file': 'parent_dir/child_dir/job_3.conf',
+                          'pipeline_tracker': 'parent_dir/foo_pipeline.conf'
+                        }
+                      ],
+                      'created_at': '1900-01-01T00:00:00.000000'
+                    }
+
+    self.assertEqual(actual_dict, expected_dict)
+
+
+
 class TestJobTracker(unittest.TestCase):
 
   @mock.patch('pathogenpipelineconfigtools.Tools.open', create=True)

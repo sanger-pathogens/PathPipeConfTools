@@ -1,3 +1,4 @@
+import datetime
 import os
 import re
 
@@ -42,6 +43,16 @@ class ConfigDirectory(object):
   def get_job_trackers(self, dirname):
     job_tracker_filenames = self.get_all_job_tracker_filenames(dirname)
     return [TrackerFile(filename) for filename in job_tracker_filenames]
+
+  def to_dict(self, dirname):
+    jobs = []
+    for tracker in self.get_job_trackers(dirname):
+      for job in tracker.get_jobs():
+        jobs.append({ 'approval_need': job.approval_required,
+                      'job_type': job.job_type,
+                      'config_file': job.config_file,
+                      'pipeline_tracker': tracker.path })
+    return { 'jobs': jobs, 'created_at': datetime.datetime.now().isoformat() }
 
 class TrackerFile(object):
   def __init__(self, path):
