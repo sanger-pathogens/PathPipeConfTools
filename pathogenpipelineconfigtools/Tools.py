@@ -7,7 +7,7 @@ class ConfigDirectory(object):
     return filter(os.path.isfile, names)
 
   def get_files_in_directory(self, dirname):
-    contents = os.path.listdir(dirname)
+    contents = os.listdir(dirname)
     files = self.just_files(contents)
     def add_path(filename):
       return os.path.join(dirname, filename)
@@ -27,7 +27,7 @@ class ConfigDirectory(object):
     return filter(os.path.isdir, names)
 
   def get_subdirectories(self, parent):
-    contents = os.path.listdir(parent)
+    contents = os.listdir(parent)
     dirs = self.just_dirs(contents)
     def add_path(child):
       return os.path.join(parent, child)

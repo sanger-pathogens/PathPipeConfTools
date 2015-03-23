@@ -29,14 +29,14 @@ class TestAdminRequired(unittest.TestCase):
   def test_get_files_in_directory(self, os_mock):
     config_dir = ConfigDirectory()
     os_mock.path.join = os.path.join
-    os_mock.path.listdir.return_value = ['file_foo', 'dir_bar', 'link_baz']
+    os_mock.listdir.return_value = ['file_foo', 'dir_bar', 'link_baz']
     os_mock.path.isfile.side_effect = self.isfile
 
     files = config_dir.get_files_in_directory('parent_directory')
     expected_files = ['parent_directory/file_foo', 'parent_directory/link_baz']
 
     self.assertItemsEqual(files, expected_files)
-    os_mock.path.listdir.assert_called_with('parent_directory')
+    os_mock.listdir.assert_called_with('parent_directory')
 
   def test_has_pipeline_conf(self):
     config_dir = ConfigDirectory()
@@ -74,7 +74,7 @@ class TestAdminRequired(unittest.TestCase):
   def test_get_subdirectories(self, os_mock):
     config_dir = ConfigDirectory()
     os_mock.path.join = os.path.join
-    os_mock.path.listdir.return_value = ['file_foo', 'dir_bar', 'link_baz']
+    os_mock.listdir.return_value = ['file_foo', 'dir_bar', 'link_baz']
     os_mock.path.isdir.side_effect = self.isdir
 
     subdirs = config_dir.get_subdirectories('parent_directory')
@@ -95,7 +95,7 @@ class TestAdminRequired(unittest.TestCase):
     os_mock.path.join = os.path.join
     os_mock.path.isdir.side_effect = self.isdir
     os_mock.path.isfile.side_effect = self.isfile
-    os_mock.path.listdir.side_effect = self.nested_directory
+    os_mock.listdir.side_effect = self.nested_directory
     os_mock.path.sep = '/'
     pipeline_files = config_dir.get_all_job_tracker_filenames('dir_parent')
     expected_files = ['dir_parent/file_parent_pipeline.conf', 'dir_parent/dir_child/file_child_pipeline.conf']
