@@ -143,17 +143,17 @@ class TestAdminRequired(unittest.TestCase):
     actual_dict = config_dir.to_dict('parent_dir')
     expected_dict = {
                       'jobs': [
-                        { 'approval_need': True,
+                        { 'approval_required': True,
                           'job_type': '__FOO__',
                           'config_file': 'parent_dir/child_dir/job_1.conf',
                           'pipeline_tracker': 'parent_dir/foo_pipeline.conf'
                         },
-                        { 'approval_need': True,
+                        { 'approval_required': True,
                           'job_type': '__BAR__',
                           'config_file': 'parent_dir/child_dir/job_2.conf',
                           'pipeline_tracker': 'parent_dir/foo_pipeline.conf'
                         },
-                        { 'approval_need': False,
+                        { 'approval_required': False,
                           'job_type': '__BAZ__',
                           'config_file': 'parent_dir/child_dir/job_3.conf',
                           'pipeline_tracker': 'parent_dir/foo_pipeline.conf'

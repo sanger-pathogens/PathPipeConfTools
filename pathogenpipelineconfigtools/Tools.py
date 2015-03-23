@@ -48,7 +48,7 @@ class ConfigDirectory(object):
     jobs = []
     for tracker in self.get_job_trackers(dirname):
       for job in tracker.get_jobs():
-        jobs.append({ 'approval_need': job.approval_required,
+        jobs.append({ 'approval_required': job.approval_required,
                       'job_type': job.job_type,
                       'config_file': job.config_file,
                       'pipeline_tracker': tracker.path })
