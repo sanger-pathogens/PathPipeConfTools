@@ -8,10 +8,10 @@ class ConfigDirectory(object):
 
   def get_files_in_directory(self, dirname):
     contents = os.listdir(dirname)
-    files = self.just_files(contents)
     def add_path(filename):
       return os.path.join(dirname, filename)
-    return map(add_path, files)
+    contents = map(add_path, contents)
+    return self.just_files(contents)
 
   def is_pipeline_conf(self, name):
     pattern = re.compile('.+_pipeline.conf$')
@@ -28,10 +28,10 @@ class ConfigDirectory(object):
 
   def get_subdirectories(self, parent):
     contents = os.listdir(parent)
-    dirs = self.just_dirs(contents)
     def add_path(child):
       return os.path.join(parent, child)
-    return map(add_path, dirs)
+    contents = map(add_path, contents)
+    return self.just_dirs(contents)
 
   def get_all_job_tracker_filenames(self, dirname):
     job_trackers = self.find_job_trackers_in_folder(dirname)
