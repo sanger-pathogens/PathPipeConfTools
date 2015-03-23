@@ -8,13 +8,16 @@ from pathogenpipelineconfigtools.Tools import ConfigDirectory, TrackerFile, Pipe
 class TestAdminRequired(unittest.TestCase):
 
   def isfile(self, name):
-    return 'file' in name or self.islink(name)
+    name = name.split('/')[-1]
+    return 'file_' in name or self.islink(name)
 
   def islink(self, name):
-    return 'link' in name
+    name = name.split('/')[-1]
+    return 'link_' in name
 
   def isdir(self, name):
-    return 'dir' in name
+    name = name.split('/')[-1]
+    return 'dir_' in name
 
   @mock.patch('pathogenpipelineconfigtools.Tools.os')
   def test_just_files(self, os_mock):
