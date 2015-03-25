@@ -1,0 +1,33 @@
+import os
+from setuptools import setup, find_packages
+import multiprocessing
+
+def readme():
+  with open(os.path.join(os.path.dirname(__file__), 'README.md')) as f:
+    return f.read()
+
+setup(name='pathogenpipelineconfigtools',
+      version='0.0.1',
+      description='Tools for working with the pathogen pipeline at The Wellcome Trust Sanger Institute',
+      long_description=readme(),
+      url='https://github.com/sanger-pathogens/pathogenpipelineconfigtools',
+      author='Ben Taylor',
+      author_email='ben.taylor@sanger.ac.uk',
+      scripts=['scripts/list-pathogen-pipeline-jobs'],
+      test_suite='nose.collector',
+      tests_require=[
+        'nose',
+        'mock'
+      ],
+      license='GPLv3',
+      packages=find_packages(),
+      classifiers=[
+        "License :: OSI Approved :: GNU General Public License (GPLv3)",
+        "Programming Language :: Python",
+        "Development Status :: 4 - Beta",
+        "Topic :: System :: Monitoring",
+        "Topic :: Utilities"
+        "Intended Audience :: Science/Research",
+        "Topic :: Scientific/Engineering :: Bio-Informatics",
+       ]
+)
