@@ -1,4 +1,4 @@
-# pathpipeconftools
+# Pathogen Pipeline Configuration Tools (pathpipeconftools) 
 
 This is probably not very interesting unless you work in the pathogen 
 informatics team at the Wellcome Trust Sanger Institute and almost 
