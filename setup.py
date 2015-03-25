@@ -6,7 +6,7 @@ def readme():
   with open(os.path.join(os.path.dirname(__file__), 'README.md')) as f:
     return f.read()
 
-setup(name='pathpipeconftools',
+setup(name='path_pipe_conf_tools',
       version='0.0.1',
       description='Tools for working with the pathogen pipeline at The Wellcome Trust Sanger Institute',
       long_description=readme(),

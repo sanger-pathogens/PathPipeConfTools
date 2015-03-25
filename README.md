@@ -1,4 +1,4 @@
-# Pathogen Pipeline Configuration Tools (pathpipeconftools) 
+# Pathogen Pipeline Configuration Tools (path_pipe_conf_tools)
 
 This is probably not very interesting unless you work in the pathogen 
 informatics team at the Wellcome Trust Sanger Institute and almost 
@@ -83,4 +83,4 @@ optional arguments:
 Tests require:
 - mock
 
-pathpipeconftools has been tested on Ubuntu 12.04 with python 2.7.3
+path_pipe_conf_tools has been tested on Ubuntu 12.04 with python 2.7.3

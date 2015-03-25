@@ -5,7 +5,7 @@ import json
 import os
 from argparse import ArgumentParser, ArgumentError, FileType
 
-from pathpipeconftools.Tools import ConfigDirectory
+from path_pipe_conf_tools.Tools import ConfigDirectory
 
 if __name__ == '__main__':
   parser = ArgumentParser(description="Outputs details of all of the pathogen jobs in the pipeline")
