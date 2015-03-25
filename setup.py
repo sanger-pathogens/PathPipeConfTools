@@ -6,11 +6,11 @@ def readme():
   with open(os.path.join(os.path.dirname(__file__), 'README.md')) as f:
     return f.read()
 
-setup(name='pathogenpipelineconfigtools',
+setup(name='pathpipeconftools',
       version='0.0.1',
       description='Tools for working with the pathogen pipeline at The Wellcome Trust Sanger Institute',
       long_description=readme(),
-      url='https://github.com/sanger-pathogens/pathogenpipelineconfigtools',
+      url='https://github.com/sanger-pathogens/PathPipeConfTools',
       author='Ben Taylor',
       author_email='ben.taylor@sanger.ac.uk',
       scripts=['scripts/list-pathogen-pipeline-jobs'],

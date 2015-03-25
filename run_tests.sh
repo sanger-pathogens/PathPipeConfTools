@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python -m unittest discover -s pathogenpipelineconfigtools/tests/ -p '*_test.py'
+python -m unittest discover -s pathpipeconftools/tests/ -p '*_test.py'
