@@ -3,7 +3,7 @@ import mock
 import os
 from mock import MagicMock
 from StringIO import StringIO
-from pathogenpipelineconfigtools.Tools import ConfigDirectory, TrackerFile, PipelineJob
+from path_pipe_conf_tools.Tools import ConfigDirectory, TrackerFile, PipelineJob
 
 class TestAdminRequired(unittest.TestCase):
 
@@ -19,7 +19,7 @@ class TestAdminRequired(unittest.TestCase):
     name = name.split('/')[-1]
     return 'dir_' in name
 
-  @mock.patch('pathogenpipelineconfigtools.Tools.os')
+  @mock.patch('path_pipe_conf_tools.Tools.os')
   def test_just_files(self, os_mock):
     config_dir = ConfigDirectory()
     os_mock.path.isfile.side_effect = self.isfile
@@ -28,7 +28,7 @@ class TestAdminRequired(unittest.TestCase):
     expected_files = ['file_foo']
     self.assertEqual(files, expected_files)
 
-  @mock.patch('pathogenpipelineconfigtools.Tools.os')
+  @mock.patch('path_pipe_conf_tools.Tools.os')
   def test_get_files_in_directory(self, os_mock):
     config_dir = ConfigDirectory()
     os_mock.path.join = os.path.join
@@ -64,7 +64,7 @@ class TestAdminRequired(unittest.TestCase):
     expected_trackers = ['parent_directory/foo_pipeline.conf']
     self.assertEqual(trackers, expected_trackers)
 
-  @mock.patch('pathogenpipelineconfigtools.Tools.os')
+  @mock.patch('path_pipe_conf_tools.Tools.os')
   def test_just_dirs(self, os_mock):
     config_dir = ConfigDirectory()
     os_mock.path.isdir.side_effect = self.isdir
@@ -73,7 +73,7 @@ class TestAdminRequired(unittest.TestCase):
     expected_dirs = ['dir_bar']
     self.assertEqual(dirs, expected_dirs)
 
-  @mock.patch('pathogenpipelineconfigtools.Tools.os')
+  @mock.patch('path_pipe_conf_tools.Tools.os')
   def test_get_subdirectories(self, os_mock):
     config_dir = ConfigDirectory()
     os_mock.path.join = os.path.join
@@ -92,7 +92,7 @@ class TestAdminRequired(unittest.TestCase):
     else:
       return ['file_another_pipeline.conf', 'file_another_random', 'dir_yet_another']
 
-  @mock.patch('pathogenpipelineconfigtools.Tools.os')
+  @mock.patch('path_pipe_conf_tools.Tools.os')
   def test_get_all_job_tracker_filenames(self, os_mock):
     config_dir = ConfigDirectory()
     os_mock.path.join = os.path.join
@@ -117,7 +117,7 @@ class TestAdminRequired(unittest.TestCase):
     tracker_filenames = [tracker.path for tracker in tracker_files]
     self.assertEqual(tracker_filenames, pipeline_files)
 
-  @mock.patch('pathogenpipelineconfigtools.Tools.datetime')
+  @mock.patch('path_pipe_conf_tools.Tools.datetime')
   def test_to_dict(self, datetime_mock):
     datetime_mock.datetime.now.return_value.isoformat.return_value = '1900-01-01T00:00:00.000000'
     def new_job(approval_required, job_type, config_file):
@@ -168,7 +168,7 @@ class TestAdminRequired(unittest.TestCase):
 
 class TestJobTracker(unittest.TestCase):
 
-  @mock.patch('pathogenpipelineconfigtools.Tools.open', create=True)
+  @mock.patch('path_pipe_conf_tools.Tools.open', create=True)
   def test_get_lines(self, open_mock):
     file_like_object = StringIO('line 1\nline 2\n')
     open_mock.return_value.__enter__.return_value = file_like_object
