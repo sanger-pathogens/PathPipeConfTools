@@ -27,7 +27,7 @@ setup(name='path_pipe_conf_tools',
         "Programming Language :: Python",
         "Development Status :: 4 - Beta",
         "Topic :: System :: Monitoring",
-        "Topic :: Utilities"
+        "Topic :: Utilities",
         "Intended Audience :: Science/Research",
         "Topic :: Scientific/Engineering :: Bio-Informatics",
        ]
