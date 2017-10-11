@@ -107,4 +107,5 @@ Tests require:
 path\_pipe\_conf\_tools has been tested on Ubuntu 12.04 with python
 2.7.3
 
-Build status: [![Build Status](https://travis-ci.org/sanger-pathogens/PathPipeConfTools.svg?branch=master)](https://travis-ci.org/sanger-pathogens/PathPipeConfTools)
+.. image:: https://travis-ci.org/sanger-pathogens/PathPipeConfTools.svg?branch=master
+    :target: https://travis-ci.org/sanger-pathogens/PathPipeConfTools
