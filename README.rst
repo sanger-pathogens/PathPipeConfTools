@@ -16,6 +16,14 @@ This is used in collaboration with
 ``cron`` job to send updates / reminders to the pathogen informatics
 team.
 
+Installation
+------------
+
+::
+
+    python setup.py install
+
+
 Usage
 -----
 
